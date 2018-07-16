@@ -1,9 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const Codeforces = require('~/api.js');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', async function(req, res, next) {
+    let val = "Express";
+    try{
+        val = await Codeforces.blogEntry.comments({'blogEntryId': 79});
+    }catch(error){
+        val = error;
+    }
+    res.render('index', { title: val });
 });
 
 module.exports = router;
