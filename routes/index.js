@@ -6,7 +6,7 @@ const Codeforces = require('~/api.js');
 router.get('/', async function(req, res, next) {
     let val = "Express";
     try{
-        val = await Codeforces.blogEntry.comments({'blogEntryId': 79});
+        val = await Codeforces.user.info("oTo_ToT");
     }catch(error){
         val = error;
     }
