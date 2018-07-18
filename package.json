@@ -16,5 +16,6 @@
     "query-string": "^6.1.0",
     "randomstring": "^1.1.5",
     "wavy": "^1.0.4"
-  }
+  },
+  "devDependencies": {}
 }
