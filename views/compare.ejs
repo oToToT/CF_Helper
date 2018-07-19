@@ -7,6 +7,7 @@
         <title>Codeforces Helper</title>
         <!-- Material-Bootstrap CSS -->
         <link rel="stylesheet" href="/stylesheets/material-kit.min.css">
+        <link rel="stylesheet" href="/stylesheets/dataTables.bootstrap4.min.css">
     </head>
     <body>
         <% if(typeof error !== 'undefined'){ %>
@@ -38,7 +39,8 @@
                 </div>
             </div>
         </nav>
-        <div class="page-header">
+        <div class="page-header" data-parallax="true">
+            
         </div>
         <div class="main main-raised">
             <div class="section">
@@ -46,24 +48,89 @@
                     <div class="title">
                         <h2>Result</h2>
                     </div>
-                    <table class="table table-hover">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th class="text-cente">Problem Id</th>
-                                <th>Problem Name</th>
-                                <th class="text-cente">ACs</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% both.forEach(function(data){%>
-                            <tr>
-                                <td class="text-cente"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= `${data.contestId}${data.index}`; %></a> </td>
-                                <td> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= data.name %></a> </td>
-                                <td class="text-cente"> <%= data.solvedCount %> </td>
-                            </tr>
-                            <% }); %>
-                        </tbody>
-                    </table>
+                    <div class="card card-nav-tabs" style="min-height: 800px">
+                        <div class="card-header card-header-primary">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                    <ul class="nav nav-tabs" role="tablist" data-tabs="tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" role="tab" href="#one" data-target="#one" aria-controls="one" aria-selected="true">Only <%= id1 %>(<%= one.length %>)</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" role="tab" href="#two" data-target="#two" aria-controls="two" aria-selected="false">Only <%= id2 %>(<%= two.length %>)</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" role="tab" href="#both" data-target="#both" aria-controls="both" aria-selected="false">Both(<%= both.length %>)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="one">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col" class="text-center w-15">#</th>
+                                                <th scope="col" class="w-70">Problem Name</th>
+                                                <th scope="col" class="text-center w-15">ACs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% {let key = 1; one.forEach(function(data){%>
+                                            <tr>
+                                                <th data-order="<%= key++ %>" scope="row" class="text-center w-15"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= `${data.contestId}${data.index}`; %></a> </th>
+                                                <td class="w-70"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= data.name %></a> </td>
+                                                <td class="text-center w-15"> <%= data.solvedCount %> </td>
+                                            </tr>
+                                            <% });} %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="two">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col" class="text-center w-15">#</th>
+                                                <th scope="col" class="w-70">Problem Name</th>
+                                                <th scope="col" class="text-center w-15">ACs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% {let key = 1; two.forEach(function(data){%>
+                                            <tr>
+                                                <th data-order="<%= key++ %>" scope="row" class="text-center w-15"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= `${data.contestId}${data.index}`; %></a> </th>
+                                                <td class="w-70"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= data.name %></a> </td>
+                                                <td class="text-center w-15"> <%= data.solvedCount %> </td>
+                                            </tr>
+                                            <% });} %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane fade" id="both">
+                                    <table class="table table-hover table-bordered">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col" class="text-center w-15">#</th>
+                                                <th scope="col" class="w-70">Problem Name</th>
+                                                <th scope="col" class="text-center w-15">ACs</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% {let key = 1; both.forEach(function(data){%>
+                                            <tr>
+                                                <th data-order="<%= key++ %>" scope="row" class="text-center w-15"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= `${data.contestId}${data.index}`; %></a> </th>
+                                                <td class="w-70"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= data.name %></a> </td>
+                                                <td class="text-center w-15"> <%= data.solvedCount %> </td>
+                                            </tr>
+                                            <% });} %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,19 +139,13 @@
                 <nav class="float-left">
                     <ul>
                         <li>
-                        <a href="https://codeforces.com">
-                            Codeforces
-                        </a>
+                            <a href="https://codeforces.com">Codeforces</a>
                         </li>
                         <li>
-                        <a href="https://ototot.tk">
-                            About Me
-                        </a>
+                            <a href="https://ototot.tk">About Me</a>
                         </li>
                         <li>
-                        <a href="https://github.com/oToToT/CF_Helper">
-                            GitHub
-                        </a>
+                            <a href="https://github.com/oToToT/CF_Helper">GitHub</a>
                         </li>
                     </ul>
                 </nav>
@@ -97,5 +158,40 @@
         <script src="/javascripts/bootstrap-material-design.min.js"></script>
         <!-- Optional JavaScript -->
         <script src="/javascripts/material-kit.min.js"></script>
+        <script src="/javascripts/jquery.dataTables.min.js"></script>
+        <script src="/javascripts/dataTables.bootstrap4.min.js"></script>
+        <script>
+        /*$('table').DataTable({
+            'order': [[2, "asc"]]
+        });*/
+        $("ul.nav.nav-tabs .nav-link").on('click', function(e){
+            e.preventDefault();
+            $(this).tab('show');
+        });
+        $('table').DataTable({
+            'order': [[0, 'asc']]
+        });
+        </script>
+        <style>
+            .w-15{
+                width: 15%;
+            }
+            .w-70{
+                width: 70%;
+            }
+            .page-header{
+                background-image: url('/images/cover.jpg');
+            }
+            .page-header::after {
+                content:'';
+                width: 100vw;
+                height: 100vh;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                background-image: linear-gradient(45deg,rgba(101,47,142,.88) 0,rgba(125,46,185,.45) 100%);
+            }
+        </style>
     </body>
 </html>
