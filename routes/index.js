@@ -9,14 +9,29 @@ router.get('/', async function(req, res, next) {
 router.get('/compare/:id1/:id2', async function(req, res, next) {
     const id1 = req.params.id1, id2 = req.params.id2;
     console.log(`> compare ${id1} and ${id2}`);
-    let result = {}
+    let s1 = {}, s2 = {};
     try{
-        result = await Promise.all(Codeforces.external.user.acProblems(id1), 
-            Codeforces.external.user.acProblems(id2));
+        await Promise.all([Codeforces.user.status({'handle': id1}), 
+            Codeforces.user.status({'handle': id2}),
+            Codeforces.problemset.problems()]);
+        [s1, s2] = await Promise.all([Codeforces.external.acProblemsOfUser(id1),
+            Codeforces.external.acProblemsOfUser(id2)]);
     }catch(error){
-        result = error;
+        return res.render('compare', {'error': error});
     }
-    res.render('compare', {one: result[0], two: result[1]});
+    const only1 = [...s1].filter((x)=>{
+        const x_name = `${x.contestId}${x.index}`;
+        return !s2.find((y)=>x_name == `${y.contestId}${y.index}`);
+    });
+    const only2 = [...s2].filter((x)=>{
+        const x_name = `${x.contestId}${x.index}`;
+        return !s1.find((y)=>x_name == `${y.contestId}${y.index}`);
+    })
+    const both = [...s1].filter((x)=>{
+        const x_name = `${x.contestId}${x.index}`;
+        return s2.find((y)=>x_name == `${y.contestId}${y.index}`);
+    })
+    return res.render('compare', {only1, only2, both});
 });
 
 module.exports = router;

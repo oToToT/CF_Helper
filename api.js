@@ -4,26 +4,26 @@ const randomstring = require('randomstring');
 const crypto = require('crypto');
 
 const CfCache = function() {
-    let dataStore = {}, CACHED_TIME = 600000;
+    let dataStore = new Map(), CACHED_TIME = 600000;
     return {
         setCacheTime: function(time) {
             CACHED_TIME = time;
         },
         check: function(key) {
-            if(typeof dataStore[key] === 'undefined') return false;
+            if(!dataStore.has(key)) return false;
             const curTime = new Date();
-            if(curTime - dataStore[key].updTime >= CACHED_TIME) {
-                delete dataStore[key];
+            if(curTime - dataStore.get(key).updTime >= CACHED_TIME) {
+                dataStore.delete(key);
                 return false;
             }
             return true;
         },
         get: function(key) {
-            return dataStore[key].value;
+            return dataStore.get(key).value;
         },
         update: function(key, data) {
             const curTime = new Date();
-            dataStore[key] = { 'updTime': curTime, 'value': data };
+            dataStore.set(key, { 'updTime': curTime, 'value': data });
         }
     }
 }
@@ -50,20 +50,28 @@ const Codeforces = function() {
         // fetch data
         const url = `https://codeforces.com/api/${method}?${queryString.stringify(params)}`;
         console.log(`fetching ${url}`);
-        const result = await fetch(url, {
-            method: 'GET', 
-            cache: 'reload',
-            referrer: 'no-referrer'
-        }).then((res)=>res.json());
-        // check result type
-        if(result.status === "FAILED") {
-            throw new Error(result.comment);
-        } else if(result.status === "OK") {
-            cfcache.update(cache_key, result.result);
-            console.log("success");
-            return result.result;
-        } else {
-            throw new Error("fail calling api with unknown reason");
+        try{
+            const result = await fetch(url, {
+                method: 'GET', 
+                cache: 'reload',
+                referrer: 'no-referrer'
+            }).then((res)=>{
+                if ((res.status >= 200 && res.status < 300) || res.status === 400)
+                    return res.json();
+                else throw new Error(res.statusText);
+            });
+            // check result type
+            if(result.status === "FAILED") {
+                throw new Error(result.comment);
+            } else if(result.status === "OK") {
+                cfcache.update(cache_key, result.result);
+                console.log("success");
+                return result.result;
+            } else {
+                throw new Error("fail calling api with unknown reason");
+            }
+        }catch(error){
+            throw error;
         }
     }
     return {
@@ -200,6 +208,46 @@ const Codeforces = function() {
                 if(typeof time !== 'number')
                     throw new Error('cache time should be a number');
                 cfcache.setCacheTime(time);
+            },
+            acProblemsOfUser: async function(id) {
+                if(typeof id !== 'string')
+                    throw new Error('id should be a string');
+                const cache_key = `acProblemsOfUser?${id}`;
+                if(cfcache.check(cache_key))
+                    return cfcache.get(cache_key);
+                let [submissions, problemList] = await Promise.all([
+                    ApiCall('user.status', {'handle': id}),
+                    ApiCall('problemset.problems', {})
+                ]);
+                submissions = submissions.filter((x)=>{
+                    return x.verdict === 'OK';
+                });
+                let acSet = new Set();
+                submissions.forEach(function(submission){
+                    const problem = submission.problem;
+                    if(typeof problem.problemsetName === 'undefined'){
+                        let prob = problemList.problems.find((x)=>{
+                            return x.contestId === problem.contestId && x.index === problem.index;
+                        });
+                        if(typeof prob === 'undefined') 
+                            prob = problemList.problems.find((x)=>{
+                                return x.contestId === problem.contestId-1 && x.name === problem.name;
+                            });                      
+                        if(typeof prob !== 'undefined'){
+                            const probName = `${prob.contestId}${prob.index}`;
+                            acSet.add(probName);
+                        }
+                    }
+                });
+                let acResult = [...acSet].map((prob)=>{
+                    return Object.assign(problemList.problemStatistics.find((p)=>{
+                        return prob === `${p.contestId}${p.index}`;
+                    }), problemList.problems.find((p)=>{
+                        return prob === `${p.contestId}${p.index}`;
+                    }));
+                });
+                cfcache.update(cache_key, acResult);
+                return acResult;
             }
         }
     };

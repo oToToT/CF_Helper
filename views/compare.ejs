@@ -4,54 +4,98 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
-
         <title>Codeforces Helper</title>
+        <!-- Material-Bootstrap CSS -->
+        <link rel="stylesheet" href="/stylesheets/material-kit.min.css">
     </head>
     <body>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Problem Id</th>
-                    <th>Problem Name</th>
-                    <th>Tags</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% one.forEach(function(data){%>
-                <tr>
-                    <td> <%= `${data.problem.contestId?data.problem.contestId:""}${data.problem.index}`; %> </td>
-                    <td> <%= data.problem.name %> </td>
-                    <td> <%= data.problem.tags.join(',') %> </td>
-                </tr>
-                <% }); %>
-            </tbody>
-        </table>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Problem Id</th>
-                    <th>Problem Name</th>
-                    <th>Tags</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% two.forEach(function(data){%>
-                <tr>
-                    <td> <%= `${data.problem.contestId?data.problem.contestId:""}${data.problem.index}`; %> </td>
-                    <td> <%= data.problem.name %> </td>
-                    <td> <%= data.problem.tags.join(',') %> </td>
-                </tr>
-                <% }); %>
-            </tbody>
-        </table>
-
-        <!-- Optional JavaScript -->
+        <% if(typeof error !== 'undefined'){ %>
+            <h1><%= error %></h1>
+            Please Retry.
+        <% }else{ %>
+        <nav class="rounded-0 navbar navbar-expand-lg bg-primary fixed-top">
+            <div class="container">
+                <div class="navbar-translate">
+                    <a class="navbar-brand" href="/">
+                        Codeforces Helper
+                    </a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="active nav-item">
+                            <a class="nav-link" href="/compare">Compare<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/vc_picker">Virtual Contest Picker</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/stats">Statistics</a>
+                        </li    
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="page-header">
+        </div>
+        <div class="main main-raised">
+            <div class="section">
+                <div class="container">
+                    <div class="title">
+                        <h2>Result</h2>
+                    </div>
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-cente">Problem Id</th>
+                                <th>Problem Name</th>
+                                <th class="text-cente">ACs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% both.forEach(function(data){%>
+                            <tr>
+                                <td class="text-cente"> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= `${data.contestId}${data.index}`; %></a> </td>
+                                <td> <a href="https://codeforces.com/problemset/problem/<%= data.contestId %>/<%= data.index %>"><%= data.name %></a> </td>
+                                <td class="text-cente"> <%= data.solvedCount %> </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <nav class="float-left">
+                    <ul>
+                        <li>
+                        <a href="https://codeforces.com">
+                            Codeforces
+                        </a>
+                        </li>
+                        <li>
+                        <a href="https://ototot.tk">
+                            About Me
+                        </a>
+                        </li>
+                        <li>
+                        <a href="https://github.com/oToToT/CF_Helper">
+                            GitHub
+                        </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </footer>
+        <% } %>
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+        <script src="/javascripts/jquery.min.js"></script>
+        <script src="/javascripts/popper.min.js"></script>
+        <script src="/javascripts/bootstrap-material-design.min.js"></script>
+        <!-- Optional JavaScript -->
+        <script src="/javascripts/material-kit.min.js"></script>
     </body>
 </html>
